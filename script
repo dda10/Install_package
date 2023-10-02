@@ -1,0 +1,2 @@
+Show telegraf config without comment lines
+grep -v "^\s*[#\;]\|^\s*$" /etc/telegraf/telegraf.conf
