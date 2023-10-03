@@ -4,14 +4,18 @@ import datetime
 import time
 
 http_response_map = {
-    200: "Success",
+    200: "OK",
     201: "Created",
     204: "No Content",
     400: "Bad Request",
     401: "Unauthorized",
     403: "Forbidden",
     404: "Not Found",
+    429: "Too Many Requests",
     500: "Internal Server Error",
+    502: "Bad Gateway",
+    503: "Service Unavailable",
+    504: "Gateway Timeout"
 }
 def check_website(url):
     try:
@@ -44,10 +48,9 @@ for website in websites:
     response_time = float(response_time)
     print(
     "https_response,"
-    "method=GET,"
-    f"result={result},"
-    f"server={website},"
-    f"status_code={status_code} "
+    #f"result={result},"
+    f"domain={website} "
+    #f"status_code={status_code} "
     f"content_length={content_length},"
     f"http_response_code={http_response_code},"
     f"response_time={response_time},"
