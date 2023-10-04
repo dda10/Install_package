@@ -18,9 +18,10 @@ http_response_map = {
     504: "Gateway Timeout"
 }
 def check_website(url):
+    url = f"https://{domain}{uri}"
     try:
         start_time = datetime.datetime.now()
-        response = requests.get("http://"+url)
+        response = requests.get (url)
         end_time = datetime.datetime.now()
 
         status_code = response.status_code
@@ -30,30 +31,29 @@ def check_website(url):
         result = http_response_map.get(status_code, "Unknown")
         timestamp = int(time.time())
 
-        return result, status_code, response_time, content_length, timestamp
+        return result, url, status_code, response_time, content_length, timestamp
     except Exception as e:
         return "Error", 0, 0, 0, datetime.datetime.now()
 
 # Read the list of websites from a file
-with open('/opt/domain', 'r') as file:
-    websites = file.read().splitlines()
+with open('/opt/https_domain', 'r') as file:
+    lines = file.read().splitlines()
 
 # Iterate through the list of websites and check their responses
-for website in websites:
-    result, status_code, response_time, content_length, timestamp = check_website(website)
-
+for line in lines:
+    domain, uri = line.strip().split()
+    result, url, status_code, response_time, content_length, timestamp = check_website(line)
     content_length = int(content_length)
     http_response_code = int(status_code)
     result_type ='"' + result + '"'
     response_time = float(response_time)
     print(
-    "https_response,"
-    #f"result={result},"
-    f"domain={website} "
-    #f"status_code={status_code} "
+    "url_response,"
+    f"domain={domain},"
+    f"uri={uri},"
+    f"url={url} "
     f"content_length={content_length},"
     f"http_response_code={http_response_code},"
     f"response_time={response_time},"
     f"result_type={result_type}"
     )
-
