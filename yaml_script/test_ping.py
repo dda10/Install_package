@@ -1,7 +1,9 @@
-#!/usr/bin/python3
-
 import subprocess
 import re
+import yaml
+
+# A set to keep track of already checked domains with ping
+checked_domains = set()
 
 def ping_domain(domain):
     try:
@@ -22,20 +24,31 @@ def ping_domain(domain):
 
             # Generate the output string
             output_string = f'ping,domain={domain} average_response_ms={avg_time:.3f},maximum_response_ms={max_time:.3f},minimum_response_ms={min_time:.3f},percent_packet_loss={packet_loss_percentage},ttl={ttl}'
-        else:
-            # If the exit code is non-zero, indicating failure
-            output_string = f'ping,domain={domain} average_response_ms=0.000,maximum_response_ms=0.000,minimum_response_ms=0.000,percent_packet_loss=100,ttl=0'
 
-        return output_string
+            return [output_string]
+        else:
+            # If the exit code is non-zero, indicating failure, return an empty list
+            return []
+
     except subprocess.CalledProcessError:
         print(f"Failed to ping {domain}")
-        return None
-
-with open('/opt/domain', 'r') as file:
-    domains = file.read().splitlines()
+        return []
 
 if __name__ == "__main__":
-    for domain in domains:
-        result = ping_domain(domain)
-        if result:
-            print(result)
+    with open('domain.yaml', 'r') as file:
+        config_data = yaml.safe_load(file)
+
+    for entry in config_data:
+        domain = entry.get('domain')
+
+        # Check if the domain has already been checked with ping
+        if domain not in checked_domains:
+            # Call ping_domain for the domain
+            results = ping_domain(domain)
+            for result in results:
+                if result:
+                    print(result)
+
+            # Mark the domain as checked with ping
+            checked_domains.add(domain)
+

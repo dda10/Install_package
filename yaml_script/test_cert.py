@@ -1,8 +1,10 @@
-#!/usr/bin/python3
-
 import ssl
 import socket
 import datetime
+import yaml
+
+# A dictionary to keep track of already checked domains
+checked_domains = {}
 
 def check_ssl_cert(domain, port=443):
     try:
@@ -28,11 +30,20 @@ def check_ssl_cert(domain, port=443):
     except Exception as e:
         return domain, "invalid", str(e)
 
-# Read domains from a text file (one domain per line)
-with open('/opt/domain', 'r') as file:
-    domains = file.read().splitlines()
+if __name__ == "__main__":
+    with open('domain.yaml', 'r') as file:
+        config_data = yaml.safe_load(file)
 
-# Iterate through the list of domains and check their SSL certificates
-for domain in domains:
-    domain_name, validity, time_to_expiry = check_ssl_cert(domain)
-    print(f"cert_check,domain={domain_name} verification=" + '"' + f"{validity}" + '"' + f",expiry={int(time_to_expiry)}")
+    for entry in config_data:
+        domain = entry.get('domain')
+        uris = entry.get('uri', [])
+
+        # Check if the domain has already been checked
+        if domain not in checked_domains:
+            domain_name, validity, time_to_expiry = check_ssl_cert(domain)
+            print(f"cert_check,domain={domain_name} verification=" + '"' + f"{validity}" + '"' + f",expiry={int(time_to_expiry)}")
+
+            # Mark the domain as checked
+            checked_domains[domain] = True
+
+
