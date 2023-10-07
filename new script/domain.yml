@@ -1,0 +1,23 @@
+domains:
+  - domain: hopdongdientu.viettel.vn
+    uris:
+      - uri: /scontract-web-api/api/file/view/contract-by-path
+        method: POST
+        requires_authentication: true
+        timeout_seconds: 5
+
+  - domain: laodong.vn
+    uris:
+      - uri: /
+        method: GET
+        requires_authentication: false
+
+      - uri: /thoi-su
+        method: GET
+        requires_authentication: false
+
+  - domain: vietlott.vn
+    uris:
+      - uri: /
+        method: GET
+        requires_authentication: false
