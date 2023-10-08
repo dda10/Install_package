@@ -5,8 +5,8 @@ import requests
 url = "https://hopdongdientu.viettel.vn/scontract-web-api/api/auth/login"
 
 data = {
-    "username": "6000000000_vcs",
-    "password": "Q27}dg{~"
+    "username": "",
+    "password": ""
 }
 
 headers = {
