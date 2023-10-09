@@ -35,12 +35,10 @@ def ping_domain(domain):
         return []
 
 if __name__ == "__main__":
-    with open('domain.yml', 'r') as yaml_file:
-        data = yaml.load(yaml_file, Loader=yaml.FullLoader)
-
-    # Iterate through domains and URIs
-    for domain_data in data['domains']:
-        domain = domain_data['domain']
+    with open('domain.yaml', 'r') as file:
+        config = yaml.safe_load(file)
+    for entry in config:
+        domain = entry['domain']
         results = ping_domain(domain)
         for result in results:
             if result:
