@@ -1,60 +1,48 @@
-import argparse
 import socket
-import scapy.all as scapy
+import time
 import yaml
+from scapy.all import *
 
-def send_packet(target_ip, ttl):
-    # Create an ICMP packet with the specified TTL
-    packet = scapy.IP(dst=target_ip, ttl=ttl) / scapy.ICMP()
-
-    # Send the packet and wait for a response
-    reply = scapy.sr1(packet, verbose=False, timeout=1)
-
-    if reply:
-        # Calculate round-trip time (RTT) in milliseconds
-        rtt_ms = reply.time * 1000
-        return {
-            'hop': ttl,
-            'ip': target_ip,
-            'avg': rtt_ms,
-            'best': rtt_ms,
-            'worst': rtt_ms,
-            'loss': 0,  # Assuming no loss for simplicity
-            'status': 'OK'
-        }
-    else:
-        return {
-            'hop': ttl,
-            'ip': target_ip,
-            'avg': 0,  # Set average RTT to 0 for non-responsive hops
-            'best': 0,
-            'worst': 0,
-            'loss': 100,  # Set loss to 100% for non-responsive hops
-            'status': 'UNREACHABLE'
-        }
-
-def mtr(target_ip, max_hops):
-    results = []
+def tcp_traceroute(target_host, max_hops=30, timeout=2):
     for ttl in range(1, max_hops + 1):
-        result = send_packet(target_ip, ttl)
-        results.append(result)
-    return results
+        total_rtt = 0
+        successful_probes = 0
+
+        for _ in range(3):  # Send 3 probes for each hop
+            # Create an IP packet with an increasing TTL value and a TCP packet
+            packet = IP(dst=target_host, ttl=ttl) / TCP(dport=443, flags='S')
+            
+            # Send the packet and record the start time
+            reply = sr1(packet, verbose=0, timeout=timeout)
+
+            if reply is not None:
+                host_ip = reply.getlayer(IP).src
+                rtt = (reply.time - packet.sent_time) * 1000  # Convert to milliseconds
+                total_rtt += rtt
+                successful_probes += 1
+                # If the target host is reached, break out of the loop
+                if host_ip == target_host:
+                    break
+
+        if successful_probes > 0:
+            avg_rtt = total_rtt / successful_probes
+            loss_percentage = (1 - (successful_probes / 3)) * 100
+            print(f"traceroute,dest={target_host},hop={ttl},ip={host_ip} avg={avg_rtt:.2f}ms,loss={100 - (successful_probes / 3 * 100):.1f}%,status=\"OK\"")
+
+            # If the target host is reached, break out of the loop
+            if target_host == host_ip:
+                break
+        else:
+            print(f"traceroute,dest={target_host},hop={ttl},ip=*,avg=*,loss=100%,status=\"Timeout\"")
+
 
 def main():
-    try:
-        with open('domain.yml', 'r') as yaml_file:
-            data = yaml.load(yaml_file, Loader=yaml.FullLoader)
-        for domain_data in data['domains']:
-            domain = domain_data['domain']
-            try:
-                target_ip = socket.gethostbyname(domain)
-                results = mtr(target_ip, 30)
-                for result in results:
-                    print(f'mtr,dest={domain},hop={result["hop"]},ip={result["ip"]} avg={result["avg"]:.2f},best={result["best"]:.2f},worst={result["worst"]:.2f},loss={result["loss"]},status="{result["status"]}"')
-            except socket.gaierror:
-                print(f'Unable to resolve target host: {domain}')
-    except Exception as e:
-        print(f"Error reading YAML file: {e}")
+    with open("domain.yaml", "r") as file:
+        data = yaml.safe_load(file)
+    
+    for entry in data:
+        target_host = entry['domain']
+        tcp_traceroute(target_host)
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
