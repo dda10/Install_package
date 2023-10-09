@@ -31,13 +31,10 @@ def check_ssl_cert(domain, port=443):
         return domain, "invalid", str(e)
 
 if __name__ == "__main__":
-    with open('domain.yml', 'r') as yaml_file:
-        data = yaml.load(yaml_file, Loader=yaml.FullLoader)
+    with open('domain.yaml', 'r') as file:
+        config = yaml.safe_load(file)
 
-    # Iterate through domains and URIs
-    for domain_data in data['domains']:
-        domain = domain_data['domain']
+    for entry in config:
+        domain = entry['domain']
         domain_name, validity, time_to_expiry = check_ssl_cert(domain)
         print(f"cert_check,domain={domain_name} verification=" + '"' + f"{validity}" + '"' + f",expiry={int(time_to_expiry)}")
-
-
