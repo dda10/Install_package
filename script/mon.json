@@ -1,0 +1,1352 @@
+{
+    "annotations": {
+      "list": [
+        {
+          "builtIn": 1,
+          "datasource": {
+            "type": "grafana",
+            "uid": "-- Grafana --"
+          },
+          "enable": true,
+          "hide": true,
+          "iconColor": "rgba(0, 211, 255, 1)",
+          "name": "Annotations & Alerts",
+          "type": "dashboard"
+        }
+      ]
+    },
+    "editable": true,
+    "fiscalYearStartMonth": 0,
+    "graphTooltip": 0,
+    "id": 4,
+    "links": [],
+    "liveNow": false,
+    "panels": [
+      {
+        "datasource": {
+          "type": "influxdb",
+          "uid": "c3a03422-fb63-4c34-8250-00323291a972"
+        },
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "thresholds"
+            },
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "dark-green",
+                  "value": null
+                }
+              ]
+            }
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 7,
+          "w": 6,
+          "x": 0,
+          "y": 0
+        },
+        "id": 23,
+        "options": {
+          "colorMode": "background",
+          "graphMode": "area",
+          "justifyMode": "auto",
+          "orientation": "auto",
+          "reduceOptions": {
+            "calcs": [
+              "lastNotNull"
+            ],
+            "fields": "",
+            "values": false
+          },
+          "textMode": "value"
+        },
+        "pluginVersion": "10.1.4",
+        "targets": [
+          {
+            "datasource": {
+              "type": "influxdb",
+              "uid": "c3a03422-fb63-4c34-8250-00323291a972"
+            },
+            "groupBy": [
+              {
+                "params": [
+                  "$__interval"
+                ],
+                "type": "time"
+              }
+            ],
+            "measurement": "cert_check",
+            "orderByTime": "ASC",
+            "policy": "default",
+            "refId": "A",
+            "resultFormat": "time_series",
+            "select": [
+              [
+                {
+                  "params": [
+                    "expiry"
+                  ],
+                  "type": "field"
+                },
+                {
+                  "params": [],
+                  "type": "last"
+                },
+                {
+                  "params": [
+                    " / 86400"
+                  ],
+                  "type": "math"
+                }
+              ]
+            ],
+            "tags": [
+              {
+                "key": "domain::tag",
+                "operator": "=~",
+                "value": "/^$domain$/"
+              }
+            ]
+          }
+        ],
+        "title": "Days to expire $domain",
+        "type": "stat"
+      },
+      {
+        "datasource": {
+          "type": "influxdb",
+          "uid": "c3a03422-fb63-4c34-8250-00323291a972"
+        },
+        "description": "",
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "thresholds"
+            },
+            "custom": {
+              "align": "auto",
+              "cellOptions": {
+                "type": "auto"
+              },
+              "inspect": false
+            },
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                },
+                {
+                  "color": "red",
+                  "value": 80
+                }
+              ]
+            }
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 7,
+          "w": 7,
+          "x": 6,
+          "y": 0
+        },
+        "id": 4,
+        "options": {
+          "cellHeight": "sm",
+          "footer": {
+            "countRows": false,
+            "fields": "",
+            "reducer": [
+              "sum"
+            ],
+            "show": false
+          },
+          "showHeader": true
+        },
+        "pluginVersion": "10.1.4",
+        "targets": [
+          {
+            "datasource": {
+              "type": "influxdb",
+              "uid": "b159c046-ea95-4d2e-b86e-74a3488ba601"
+            },
+            "groupBy": [
+              {
+                "params": [
+                  "1m"
+                ],
+                "type": "time"
+              },
+              {
+                "params": [
+                  "previous"
+                ],
+                "type": "fill"
+              }
+            ],
+            "measurement": "dns_record",
+            "orderByTime": "ASC",
+            "policy": "default",
+            "refId": "A",
+            "resultFormat": "time_series",
+            "select": [
+              [
+                {
+                  "params": [
+                    "ip"
+                  ],
+                  "type": "field"
+                },
+                {
+                  "params": [],
+                  "type": "last"
+                }
+              ]
+            ],
+            "tags": [
+              {
+                "key": "domain::tag",
+                "operator": "=~",
+                "value": "/^$domain$/"
+              }
+            ]
+          }
+        ],
+        "title": "Check DNS $domain",
+        "type": "table"
+      },
+      {
+        "datasource": {
+          "type": "influxdb",
+          "uid": "c3a03422-fb63-4c34-8250-00323291a972"
+        },
+        "description": "Ping test towards $domain",
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "palette-classic"
+            },
+            "custom": {
+              "axisCenteredZero": false,
+              "axisColorMode": "text",
+              "axisLabel": "Latency (ms)",
+              "axisPlacement": "auto",
+              "barAlignment": 0,
+              "drawStyle": "line",
+              "fillOpacity": 0,
+              "gradientMode": "none",
+              "hideFrom": {
+                "legend": false,
+                "tooltip": false,
+                "viz": false
+              },
+              "insertNulls": false,
+              "lineInterpolation": "linear",
+              "lineStyle": {
+                "fill": "solid"
+              },
+              "lineWidth": 1,
+              "pointSize": 4,
+              "scaleDistribution": {
+                "type": "linear"
+              },
+              "showPoints": "never",
+              "spanNulls": 600000,
+              "stacking": {
+                "group": "A",
+                "mode": "none"
+              },
+              "thresholdsStyle": {
+                "mode": "off"
+              }
+            },
+            "mappings": [],
+            "min": 0,
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                }
+              ]
+            },
+            "unit": "ms"
+          },
+          "overrides": [
+            {
+              "matcher": {
+                "id": "byName",
+                "options": "package_loss"
+              },
+              "properties": [
+                {
+                  "id": "custom.axisLabel",
+                  "value": "Package loss (%)"
+                },
+                {
+                  "id": "custom.axisPlacement",
+                  "value": "right"
+                },
+                {
+                  "id": "unit",
+                  "value": "percent"
+                },
+                {
+                  "id": "mappings",
+                  "value": [
+                    {
+                      "options": {
+                        "0": {
+                          "color": "transparent",
+                          "index": 0
+                        }
+                      },
+                      "type": "value"
+                    },
+                    {
+                      "options": {
+                        "from": 1,
+                        "result": {
+                          "color": "red",
+                          "index": 1
+                        },
+                        "to": 100
+                      },
+                      "type": "range"
+                    }
+                  ]
+                },
+                {
+                  "id": "custom.hideFrom",
+                  "value": {
+                    "legend": false,
+                    "tooltip": false,
+                    "viz": false
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        "gridPos": {
+          "h": 7,
+          "w": 11,
+          "x": 13,
+          "y": 0
+        },
+        "id": 20,
+        "maxPerRow": 3,
+        "options": {
+          "legend": {
+            "calcs": [],
+            "displayMode": "list",
+            "placement": "bottom",
+            "showLegend": true
+          },
+          "tooltip": {
+            "mode": "multi",
+            "sort": "none"
+          }
+        },
+        "repeat": "Host",
+        "repeatDirection": "h",
+        "targets": [
+          {
+            "alias": "max",
+            "datasource": {
+              "type": "influxdb",
+              "uid": "b159c046-ea95-4d2e-b86e-74a3488ba601"
+            },
+            "groupBy": [
+              {
+                "params": [
+                  "$__interval"
+                ],
+                "type": "time"
+              },
+              {
+                "params": [
+                  "null"
+                ],
+                "type": "fill"
+              }
+            ],
+            "measurement": "ping",
+            "orderByTime": "ASC",
+            "policy": "default",
+            "refId": "Max",
+            "resultFormat": "time_series",
+            "select": [
+              [
+                {
+                  "params": [
+                    "maximum_response_ms"
+                  ],
+                  "type": "field"
+                },
+                {
+                  "params": [],
+                  "type": "max"
+                }
+              ]
+            ],
+            "tags": [
+              {
+                "key": "domain::tag",
+                "operator": "=~",
+                "value": "/^$domain$/"
+              }
+            ]
+          },
+          {
+            "alias": "min",
+            "datasource": {
+              "type": "influxdb",
+              "uid": "b159c046-ea95-4d2e-b86e-74a3488ba601"
+            },
+            "groupBy": [
+              {
+                "params": [
+                  "$__interval"
+                ],
+                "type": "time"
+              },
+              {
+                "params": [
+                  "null"
+                ],
+                "type": "fill"
+              }
+            ],
+            "hide": false,
+            "measurement": "ping",
+            "orderByTime": "ASC",
+            "policy": "default",
+            "refId": "Min",
+            "resultFormat": "time_series",
+            "select": [
+              [
+                {
+                  "params": [
+                    "minimum_response_ms"
+                  ],
+                  "type": "field"
+                },
+                {
+                  "params": [],
+                  "type": "min"
+                }
+              ]
+            ],
+            "tags": [
+              {
+                "key": "domain::tag",
+                "operator": "=~",
+                "value": "/^$domain$/"
+              }
+            ]
+          },
+          {
+            "alias": "avg",
+            "datasource": {
+              "type": "influxdb",
+              "uid": "b159c046-ea95-4d2e-b86e-74a3488ba601"
+            },
+            "groupBy": [
+              {
+                "params": [
+                  "$__interval"
+                ],
+                "type": "time"
+              },
+              {
+                "params": [
+                  "null"
+                ],
+                "type": "fill"
+              }
+            ],
+            "hide": false,
+            "measurement": "ping",
+            "orderByTime": "ASC",
+            "policy": "default",
+            "refId": "Avg",
+            "resultFormat": "time_series",
+            "select": [
+              [
+                {
+                  "params": [
+                    "average_response_ms"
+                  ],
+                  "type": "field"
+                },
+                {
+                  "params": [],
+                  "type": "mean"
+                }
+              ]
+            ],
+            "tags": [
+              {
+                "key": "domain::tag",
+                "operator": "=~",
+                "value": "/^$domain$/"
+              }
+            ]
+          },
+          {
+            "alias": "package_loss",
+            "datasource": {
+              "type": "influxdb",
+              "uid": "b159c046-ea95-4d2e-b86e-74a3488ba601"
+            },
+            "groupBy": [
+              {
+                "params": [
+                  "$__interval"
+                ],
+                "type": "time"
+              },
+              {
+                "params": [
+                  "null"
+                ],
+                "type": "fill"
+              }
+            ],
+            "hide": false,
+            "measurement": "ping",
+            "orderByTime": "ASC",
+            "policy": "default",
+            "refId": "Package loss",
+            "resultFormat": "time_series",
+            "select": [
+              [
+                {
+                  "params": [
+                    "percent_packet_loss"
+                  ],
+                  "type": "field"
+                },
+                {
+                  "params": [],
+                  "type": "mean"
+                }
+              ]
+            ],
+            "tags": [
+              {
+                "key": "domain::tag",
+                "operator": "=~",
+                "value": "/^$domain$/"
+              }
+            ]
+          }
+        ],
+        "title": "Ping $domain",
+        "transformations": [],
+        "type": "timeseries"
+      },
+      {
+        "datasource": {
+          "type": "influxdb",
+          "uid": "c3a03422-fb63-4c34-8250-00323291a972"
+        },
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "thresholds"
+            },
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "dark-green",
+                  "value": null
+                },
+                {
+                  "color": "red",
+                  "value": 400
+                }
+              ]
+            }
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 3,
+          "w": 6,
+          "x": 0,
+          "y": 7
+        },
+        "id": 21,
+        "options": {
+          "colorMode": "background",
+          "graphMode": "area",
+          "justifyMode": "auto",
+          "orientation": "auto",
+          "reduceOptions": {
+            "calcs": [
+              "lastNotNull"
+            ],
+            "fields": "",
+            "values": false
+          },
+          "textMode": "auto"
+        },
+        "pluginVersion": "10.1.4",
+        "targets": [
+          {
+            "datasource": {
+              "type": "influxdb",
+              "uid": "c3a03422-fb63-4c34-8250-00323291a972"
+            },
+            "groupBy": [
+              {
+                "params": [
+                  "$__interval"
+                ],
+                "type": "time"
+              }
+            ],
+            "measurement": "https_response",
+            "orderByTime": "ASC",
+            "policy": "default",
+            "refId": "A",
+            "resultFormat": "time_series",
+            "select": [
+              [
+                {
+                  "params": [
+                    "http_response_code"
+                  ],
+                  "type": "field"
+                },
+                {
+                  "params": [],
+                  "type": "last"
+                }
+              ]
+            ],
+            "tags": [
+              {
+                "key": "domain::tag",
+                "operator": "=~",
+                "value": "/^$domain$/"
+              }
+            ]
+          }
+        ],
+        "title": "HTTP code $domain",
+        "type": "stat"
+      },
+      {
+        "datasource": {
+          "type": "influxdb",
+          "uid": "c3a03422-fb63-4c34-8250-00323291a972"
+        },
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "palette-classic"
+            },
+            "custom": {
+              "axisCenteredZero": false,
+              "axisColorMode": "text",
+              "axisLabel": "",
+              "axisPlacement": "auto",
+              "barAlignment": 0,
+              "drawStyle": "line",
+              "fillOpacity": 0,
+              "gradientMode": "none",
+              "hideFrom": {
+                "legend": false,
+                "tooltip": false,
+                "viz": false
+              },
+              "insertNulls": false,
+              "lineInterpolation": "linear",
+              "lineWidth": 1,
+              "pointSize": 5,
+              "scaleDistribution": {
+                "type": "linear"
+              },
+              "showPoints": "auto",
+              "spanNulls": false,
+              "stacking": {
+                "group": "A",
+                "mode": "none"
+              },
+              "thresholdsStyle": {
+                "mode": "off"
+              }
+            },
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                },
+                {
+                  "color": "red",
+                  "value": 80
+                }
+              ]
+            }
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 6,
+          "w": 18,
+          "x": 6,
+          "y": 7
+        },
+        "id": 24,
+        "options": {
+          "legend": {
+            "calcs": [
+              "min",
+              "max",
+              "lastNotNull"
+            ],
+            "displayMode": "table",
+            "placement": "bottom",
+            "showLegend": true
+          },
+          "tooltip": {
+            "mode": "single",
+            "sort": "none"
+          }
+        },
+        "targets": [
+          {
+            "alias": "$domain",
+            "datasource": {
+              "type": "influxdb",
+              "uid": "c3a03422-fb63-4c34-8250-00323291a972"
+            },
+            "groupBy": [
+              {
+                "params": [
+                  "10s"
+                ],
+                "type": "time"
+              },
+              {
+                "params": [
+                  "none"
+                ],
+                "type": "fill"
+              }
+            ],
+            "hide": true,
+            "measurement": "url_response",
+            "orderByTime": "ASC",
+            "policy": "default",
+            "refId": "A",
+            "resultFormat": "time_series",
+            "select": [
+              [
+                {
+                  "params": [
+                    "response_time"
+                  ],
+                  "type": "field"
+                },
+                {
+                  "params": [],
+                  "type": "last"
+                }
+              ]
+            ],
+            "tags": [
+              {
+                "key": "domain::tag",
+                "operator": "=",
+                "value": "laodong.vn"
+              }
+            ]
+          },
+          {
+            "alias": "https://$domain$uri",
+            "datasource": {
+              "type": "influxdb",
+              "uid": "c3a03422-fb63-4c34-8250-00323291a972"
+            },
+            "groupBy": [
+              {
+                "params": [
+                  "$__interval"
+                ],
+                "type": "time"
+              },
+              {
+                "params": [
+                  "none"
+                ],
+                "type": "fill"
+              }
+            ],
+            "hide": false,
+            "measurement": "url_response",
+            "orderByTime": "ASC",
+            "policy": "default",
+            "refId": "B",
+            "resultFormat": "time_series",
+            "select": [
+              [
+                {
+                  "params": [
+                    "response_time"
+                  ],
+                  "type": "field"
+                },
+                {
+                  "params": [],
+                  "type": "last"
+                }
+              ]
+            ],
+            "tags": [
+              {
+                "key": "uri::tag",
+                "operator": "=~",
+                "value": "/^$uri$/"
+              },
+              {
+                "condition": "AND",
+                "key": "domain::tag",
+                "operator": "=~",
+                "value": "/^$domain$/"
+              }
+            ]
+          }
+        ],
+        "title": "Panel Title",
+        "type": "timeseries"
+      },
+      {
+        "datasource": {
+          "type": "influxdb",
+          "uid": "c3a03422-fb63-4c34-8250-00323291a972"
+        },
+        "description": "Monitoring of the HTTP Response. On the Title of the widget you can find the Website name, and on the value the current response of the HTTP or HTTPS.\n\nThresholds are:\n* Results with 20x , Green\n* Results with 30x , Orange\n* Results with 40x , Red\n* Results with 50x , Blue",
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "thresholds"
+            },
+            "decimals": 0,
+            "displayName": "${__field.labels.server}",
+            "mappings": [
+              {
+                "options": {
+                  "from": 200,
+                  "result": {
+                    "index": 0,
+                    "text": "OK"
+                  },
+                  "to": 299
+                },
+                "type": "range"
+              },
+              {
+                "options": {
+                  "from": 300,
+                  "result": {
+                    "index": 1,
+                    "text": "Redirected"
+                  },
+                  "to": 399
+                },
+                "type": "range"
+              },
+              {
+                "options": {
+                  "from": 400,
+                  "result": {
+                    "index": 2,
+                    "text": "Client Error"
+                  },
+                  "to": 499
+                },
+                "type": "range"
+              },
+              {
+                "options": {
+                  "from": 500,
+                  "result": {
+                    "index": 3,
+                    "text": "Server Error"
+                  },
+                  "to": 599
+                },
+                "type": "range"
+              }
+            ],
+            "max": 0,
+            "min": 0,
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "semi-dark-green",
+                  "value": null
+                },
+                {
+                  "color": "dark-green",
+                  "value": 200
+                },
+                {
+                  "color": "semi-dark-orange",
+                  "value": 300
+                },
+                {
+                  "color": "semi-dark-red",
+                  "value": 400
+                },
+                {
+                  "color": "semi-dark-blue",
+                  "value": 500
+                }
+              ]
+            },
+            "unit": "short"
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 3,
+          "w": 6,
+          "x": 0,
+          "y": 10
+        },
+        "id": 6,
+        "interval": "15s",
+        "links": [],
+        "maxPerRow": 12,
+        "options": {
+          "colorMode": "background",
+          "graphMode": "none",
+          "justifyMode": "center",
+          "orientation": "auto",
+          "reduceOptions": {
+            "calcs": [
+              "lastNotNull"
+            ],
+            "fields": "",
+            "values": false
+          },
+          "textMode": "value"
+        },
+        "pluginVersion": "10.1.4",
+        "repeatDirection": "h",
+        "targets": [
+          {
+            "datasource": {
+              "type": "influxdb",
+              "uid": "c3a03422-fb63-4c34-8250-00323291a972"
+            },
+            "groupBy": [
+              {
+                "params": [
+                  "$__interval"
+                ],
+                "type": "time"
+              },
+              {
+                "params": [
+                  "none"
+                ],
+                "type": "fill"
+              }
+            ],
+            "hide": false,
+            "measurement": "https_response",
+            "orderByTime": "ASC",
+            "policy": "default",
+            "refId": "A",
+            "resultFormat": "time_series",
+            "select": [
+              [
+                {
+                  "params": [
+                    "http_response_code"
+                  ],
+                  "type": "field"
+                },
+                {
+                  "params": [],
+                  "type": "last"
+                }
+              ]
+            ],
+            "tags": [
+              {
+                "key": "domain::tag",
+                "operator": "=~",
+                "value": "/^$domain$/"
+              }
+            ]
+          }
+        ],
+        "title": "HTTP response status $domain",
+        "transformations": [
+          {
+            "id": "reduce",
+            "options": {
+              "labelsToFields": false,
+              "reducers": [
+                "lastNotNull"
+              ]
+            }
+          }
+        ],
+        "type": "stat"
+      },
+      {
+        "datasource": {
+          "type": "influxdb",
+          "uid": "c3a03422-fb63-4c34-8250-00323291a972"
+        },
+        "description": "",
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "palette-classic"
+            },
+            "custom": {
+              "axisCenteredZero": false,
+              "axisColorMode": "text",
+              "axisLabel": "",
+              "axisPlacement": "auto",
+              "fillOpacity": 80,
+              "gradientMode": "none",
+              "hideFrom": {
+                "legend": false,
+                "tooltip": false,
+                "viz": false
+              },
+              "lineWidth": 1,
+              "scaleDistribution": {
+                "type": "linear"
+              },
+              "thresholdsStyle": {
+                "mode": "off"
+              }
+            },
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                },
+                {
+                  "color": "red",
+                  "value": 80
+                }
+              ]
+            },
+            "unit": "ms"
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 9,
+          "w": 12,
+          "x": 0,
+          "y": 13
+        },
+        "id": 15,
+        "links": [],
+        "options": {
+          "barRadius": 0,
+          "barWidth": 0.97,
+          "fullHighlight": false,
+          "groupWidth": 0.7,
+          "legend": {
+            "calcs": [],
+            "displayMode": "list",
+            "placement": "right",
+            "showLegend": true,
+            "width": 0
+          },
+          "orientation": "auto",
+          "showValue": "auto",
+          "stacking": "none",
+          "tooltip": {
+            "mode": "single",
+            "sort": "desc"
+          },
+          "xField": "Time",
+          "xTickLabelRotation": 0,
+          "xTickLabelSpacing": 0
+        },
+        "pluginVersion": "10.1.4",
+        "targets": [
+          {
+            "alias": "$tag_hop-$tag_ip",
+            "datasource": {
+              "type": "influxdb",
+              "uid": "c3a03422-fb63-4c34-8250-00323291a972"
+            },
+            "groupBy": [
+              {
+                "params": [
+                  "$__interval"
+                ],
+                "type": "time"
+              },
+              {
+                "params": [
+                  "null"
+                ],
+                "type": "fill"
+              }
+            ],
+            "hide": false,
+            "measurement": "mtr",
+            "orderByTime": "ASC",
+            "policy": "default",
+            "query": "SELECT mean(\"avg\") FROM \"mtr\" WHERE (\"dest\"::tag =~ /^$domain$/) AND $timeFilter GROUP BY \"hop\", \"ip\"::tag ",
+            "rawQuery": true,
+            "refId": "A",
+            "resultFormat": "time_series",
+            "select": [
+              [
+                {
+                  "params": [
+                    "value"
+                  ],
+                  "type": "field"
+                },
+                {
+                  "params": [],
+                  "type": "mean"
+                }
+              ]
+            ],
+            "tags": []
+          }
+        ],
+        "title": "Latency of each hop $domain",
+        "type": "barchart"
+      },
+      {
+        "datasource": {
+          "type": "influxdb",
+          "uid": "c3a03422-fb63-4c34-8250-00323291a972"
+        },
+        "description": "",
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "palette-classic"
+            },
+            "custom": {
+              "axisCenteredZero": false,
+              "axisColorMode": "text",
+              "axisLabel": "",
+              "axisPlacement": "auto",
+              "fillOpacity": 80,
+              "gradientMode": "none",
+              "hideFrom": {
+                "legend": false,
+                "tooltip": false,
+                "viz": false
+              },
+              "lineWidth": 1,
+              "scaleDistribution": {
+                "type": "linear"
+              },
+              "thresholdsStyle": {
+                "mode": "off"
+              }
+            },
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                },
+                {
+                  "color": "red",
+                  "value": 80
+                }
+              ]
+            },
+            "unit": "percent"
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 9,
+          "w": 12,
+          "x": 12,
+          "y": 13
+        },
+        "id": 17,
+        "links": [],
+        "options": {
+          "barRadius": 0,
+          "barWidth": 0.97,
+          "fullHighlight": false,
+          "groupWidth": 0.7,
+          "legend": {
+            "calcs": [],
+            "displayMode": "list",
+            "placement": "right",
+            "showLegend": true
+          },
+          "orientation": "auto",
+          "showValue": "auto",
+          "stacking": "none",
+          "tooltip": {
+            "mode": "single",
+            "sort": "none"
+          },
+          "xTickLabelRotation": 0,
+          "xTickLabelSpacing": 0
+        },
+        "pluginVersion": "10.1.4",
+        "targets": [
+          {
+            "alias": "hop $tag_hop: $tag_ip",
+            "datasource": {
+              "type": "influxdb",
+              "uid": "b159c046-ea95-4d2e-b86e-74a3488ba601"
+            },
+            "dsType": "influxdb",
+            "groupBy": [
+              {
+                "params": [
+                  "hop"
+                ],
+                "type": "tag"
+              },
+              {
+                "params": [
+                  "ip::tag"
+                ],
+                "type": "tag"
+              }
+            ],
+            "measurement": "mtr",
+            "orderByTime": "ASC",
+            "policy": "default",
+            "query": "SELECT mean(\"loss\") FROM \"mtr\" WHERE (\"dest\"::tag =~ /^$domain$/) AND $timeFilter GROUP BY \"hop\", \"ip\"::tag",
+            "rawQuery": true,
+            "refId": "A",
+            "resultFormat": "time_series",
+            "select": [
+              [
+                {
+                  "params": [
+                    "loss"
+                  ],
+                  "type": "field"
+                },
+                {
+                  "params": [],
+                  "type": "mean"
+                }
+              ]
+            ],
+            "tags": [
+              {
+                "key": "dest::tag",
+                "operator": "=~",
+                "value": "/^$domain$/"
+              }
+            ]
+          }
+        ],
+        "title": "Loss % of each hop $domain",
+        "type": "barchart"
+      }
+    ],
+    "refresh": "10s",
+    "schemaVersion": 38,
+    "style": "dark",
+    "tags": [],
+    "templating": {
+      "list": [
+        {
+          "current": {
+            "selected": true,
+            "text": "laodong.vn",
+            "value": "laodong.vn"
+          },
+          "datasource": {
+            "type": "influxdb",
+            "uid": "c3a03422-fb63-4c34-8250-00323291a972"
+          },
+          "definition": "SHOW TAG VALUES ON \"telegraf\" FROM \"url_response\" WITH KEY = \"domain\"",
+          "hide": 0,
+          "includeAll": false,
+          "label": "domain",
+          "multi": false,
+          "name": "domain",
+          "options": [],
+          "query": "SHOW TAG VALUES ON \"telegraf\" FROM \"url_response\" WITH KEY = \"domain\"",
+          "refresh": 1,
+          "regex": "",
+          "skipUrlSync": false,
+          "sort": 0,
+          "type": "query"
+        },
+        {
+          "current": {
+            "selected": false,
+            "text": "/",
+            "value": "/"
+          },
+          "datasource": {
+            "type": "influxdb",
+            "uid": "c3a03422-fb63-4c34-8250-00323291a972"
+          },
+          "definition": "SHOW TAG VALUES ON \"telegraf\" FROM \"url_response\" WITH KEY = \"uri\"  WHERE \"domain\" = '$domain'",
+          "hide": 0,
+          "includeAll": false,
+          "label": "uri",
+          "multi": false,
+          "name": "uri",
+          "options": [],
+          "query": "SHOW TAG VALUES ON \"telegraf\" FROM \"url_response\" WITH KEY = \"uri\"  WHERE \"domain\" = '$domain'",
+          "refresh": 1,
+          "regex": "",
+          "skipUrlSync": false,
+          "sort": 0,
+          "type": "query"
+        }
+      ]
+    },
+    "time": {
+      "from": "now-12h",
+      "to": "now"
+    },
+    "timepicker": {},
+    "timezone": "",
+    "title": "Cloudrity Check Outside",
+    "uid": "d3c7ae96-f6c1-46f7-b5ab-e8c806c38bf5",
+    "version": 17,
+    "weekStart": ""
+  }
