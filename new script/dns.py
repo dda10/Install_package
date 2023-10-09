@@ -21,12 +21,11 @@ def perform_dns_lookup(domain):
 
 if __name__ == "__main__":
     threads = []
-    with open('domain.yml', 'r') as yaml_file:
-        data = yaml.load(yaml_file, Loader=yaml.FullLoader)
+    with open('domain.yaml', 'r') as file:
+        config = yaml.safe_load(file)
 
-# Iterate through domains and URIs
-    for domain_data in data['domains']:
-        domain = domain_data['domain']
+    for entry in config:
+        domain = entry['domain']
         thread = threading.Thread(target=perform_dns_lookup, args=(domain,))
         threads.append(thread)
         thread.start()
@@ -34,4 +33,3 @@ if __name__ == "__main__":
     # Wait for all threads to finish
     for thread in threads:
         thread.join()
-
